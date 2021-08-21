@@ -1,6 +1,10 @@
 //Range Query DS:SegTree Basic Implementation
 //o(logn) for point updates and range queries and o(n) for build
 
+//Maximum 4n size of segtree is required in the worst case for any general n.
+//if array size if a power of 2, we may take the segtree size to be 2n
+//we can even pad "identity" elements to a general n to make it a power of 2
+
 
 //Recursive Build Version
 struct Segtree
@@ -11,7 +15,7 @@ struct Segtree
     Segtree(int n1, vector<int> v)
     {
         n = n1;
-        tree.resize(2 * n);
+        tree.resize(4 * n);
         build(1, 0, n - 1, v);
     }
 
@@ -22,7 +26,7 @@ struct Segtree
             tree[node] = v[left];
             return;
         }
-        int mid = (left + right) / 2;
+        int mid = (left + right) >> 1;
         build(node << 1, left, mid, v);
         build(node << 1 | 1, mid + 1, right, v);
         tree[node] = tree[node << 1] + tree[node << 1 | 1];
@@ -36,7 +40,7 @@ struct Segtree
             return;
         }
 
-        int mid = (left + right) / 2;
+        int mid = (left + right) >> 1;
         if (mid >= idx)
             update(node << 1, left, mid, idx, val);
         else
@@ -56,7 +60,7 @@ struct Segtree
             return 0; //identity element
         }
         //partial overlap
-        int mid = (left + right) / 2;
+        int mid = (left + right) >> 1;
         return query(node << 1, left, mid, lquery, rquery) +
                query(node << 1 | 1, mid + 1, right, lquery, rquery);
     }
@@ -72,7 +76,7 @@ struct Segtree
     Segtree(int n1, vector<int> &arr)
     {
         n = n1;
-        tree.resize(2 * n);
+        tree.resize(2 * n);//iterative build will only work for array size of power of 2
         for (int i = 0; i < n; i++)
         {
             tree[n + i] = arr[i];
@@ -91,7 +95,7 @@ struct Segtree
             tree[node] = val;
             return;
         }
-        int mid = (start + end) / 2;
+        int mid = (start + end) >> 1;
         if (mid >= pos)
             update(2 * node, start, mid, pos, val);
         else
@@ -111,7 +115,7 @@ struct Segtree
         if (l > end || r < start)
             return 0; //can change as per operation(identity element)
 
-        int mid = (start + end) / 2;
+        int mid = (start + end) >> 1;
         return query(2 * node, start, mid, l, r) +
                query(2 * node + 1, mid + 1, end, l, r);//can change as per operation
     }

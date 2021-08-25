@@ -32,6 +32,8 @@ int main()
         int d = pq.top().first;
         int node = pq.top().second;
         pq.pop();
+        
+        if(dist[node]<d)continue;//important to prevent tle
 
         for (auto it : adj[node])
         {

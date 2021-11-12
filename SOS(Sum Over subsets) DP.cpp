@@ -85,11 +85,13 @@ int main()
                 DP[mask] += DP[mask ^ (1 << i)];
                 //logic of space optimization
 
-                //we already have the result for 'mask' for i-1 bits
+                //we already have the result for all submasks of 'mask' till i-1 bits
                 //if the ith bit in 'mask' is not set, we do nothing.
                 //if the ith bit in 'mask' is set, along with the existing answer, we add the answer when the ith bit is off.
-                //note that unlike the previous 2d dp, here we cannot swap the order of the loops. This is because, for the ith bit,calculating dp[current mask],
-                //we need the answer to all masks till (i-1)bits.
+                
+                //note that unlike the previous 2d dp, here we cannot swap the order of the loops.
+                //If we swap the order and do the same thing, it will give wrong results. This is because, for the ith bit,if the bit is set, 
+                //we will add dp[mask^(1<<i)][n-1] instead of dp[mask^(1<<i)][i-1] to dp[mask], which is wrong.
             }
         }
     }
